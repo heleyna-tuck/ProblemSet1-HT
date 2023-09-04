@@ -1,0 +1,17 @@
+---
+title: "STATS506_ProbSet1"
+author: "Heleyna Tucker"
+format: html
+editor: visual
+---
+
+## Problem 1
+
+Part A: Import the data into a 'data.frame' in R. I have given the appropriate column name to the data frame as well:
+
+```{r}
+col_names = c('class','Alcohol', 'Malic acid', 'Ash', 'Alcalinity of ash', 'Magnesium', 'Total phenols', 'Flavanoids', 'Nonflavanoid phenols', 'Proanthocyanins', 'Color intensity', 'Hue', 'OD280/OD315 of diluted wines', 'Proline')
+data <- read.table(file="/Users/19892/OneDrive/Documents/STATS506/Data/wine.data", sep=",", header=TRUE, col.names = col_names)
+
+data
+```
