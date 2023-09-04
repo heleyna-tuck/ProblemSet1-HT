@@ -10,7 +10,7 @@ editor: visual
 ### Part A: Import the data into a 'data.frame'  in R. I have given the appropriate column name to the data frame as well: 
 
 ```{r}
-col_names = c('class','Alcohol', 'Malic acid', 'Ash', 'Alcalinity of ash', 'Magnesium', 'Total phenols', 'Flavanoids', 'Nonflavanoid phenols', 'Proanthocyanins', 'Color intensity', 'Hue', 'OD280/OD315 of diluted wines', 'Proline')
+col_names <- c('class','Alcohol', 'Malic acid', 'Ash', 'Alcalinity of ash', 'Magnesium', 'Total phenols', 'Flavanoids', 'Nonflavanoid phenols', 'Proanthocyanins', 'Color intensity', 'Hue', 'OD280/OD315 of diluted wines', 'Proline')
 wine_data <- read.table(file="/Users/19892/OneDrive/Documents/STATS506/Data/wine.data", sep=",", header=TRUE, col.names = col_names)
 
 wine_data
@@ -25,7 +25,7 @@ wine_data
     We will do this using the 'which.max()' function in the Alcohol column from 'wine_data'.
 
     ```{r}
-    max_alcohol = wine_data[which.max(wine_data$Alcohol),]
+    max_alcohol <- wine_data[which.max(wine_data$Alcohol),]
     max_alcohol
     ```
 
@@ -36,10 +36,38 @@ Here, we find that the highest alcohol content belongs to class 1, being 14.83 A
     For this, we will use a similar function, except with the 'which.min()' function in the Alcohol column from 'wine_data'.
 
     ```{r}
-    min_alcohol = wine_data[which.min(wine_data$Alcohol),]
+    min_alcohol <- wine_data[which.min(wine_data$Alcohol),]
     min_alcohol
     ```
 
 Here, we find that the lowest alcohol content belongs to class 2, being 11.03 ABV.
 
 3.   German beers have, on average 114 mg/l of magnesium. How many of these wines have higher levels of magnesium than that? We will assume that the magnesium reported in the data is in the same units.
+
+    Below we will use the nrow() function and the given inequality to find how many wines have higher than 114 mg/l of magnesium.
+
+    ```{r}
+    nrow(wine_data[wine_data$Magnesium > 114,])
+    ```
+
+Found above, there are 25 wines that satisfy the inequality.
+
+4.  Within each class, how many wines have higher levels of magnesium than average German beer?
+
+    I will use a similar technique as before, but adding the condition of what class each condition has.
+
+    ```{r}
+    nrow(wine_data[wine_data$class == 1 & wine_data$Magnesium > 114,])
+
+    nrow(wine_data[wine_data$class == 2 & wine_data$Magnesium > 114,])
+
+    nrow(wine_data[wine_data$class == 3 & wine_data$Magnesium > 114,])
+    ```
+
+Above we can see that the code tells us that 14 wines in class 1, 6 wines in class 2, and 5 wines in class 3 have higher levels of magnesium than average German beer.
+
+### Part D: I will now create a table identifying the average value of each variable. One row will be provided with the overall average and one row per class with the class averages. 
+
+```{r}
+
+```
