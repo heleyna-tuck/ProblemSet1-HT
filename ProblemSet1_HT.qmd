@@ -5,13 +5,41 @@ format: html
 editor: visual
 ---
 
-## Problem 1
+# Problem 1
 
-Part A: Import the data into a 'data.frame' in R. I have given the appropriate column name to the data frame as well:
+### Part A: Import the data into a 'data.frame'  in R. I have given the appropriate column name to the data frame as well: 
 
 ```{r}
 col_names = c('class','Alcohol', 'Malic acid', 'Ash', 'Alcalinity of ash', 'Magnesium', 'Total phenols', 'Flavanoids', 'Nonflavanoid phenols', 'Proanthocyanins', 'Color intensity', 'Hue', 'OD280/OD315 of diluted wines', 'Proline')
-data <- read.table(file="/Users/19892/OneDrive/Documents/STATS506/Data/wine.data", sep=",", header=TRUE, col.names = col_names)
+wine_data <- read.table(file="/Users/19892/OneDrive/Documents/STATS506/Data/wine.data", sep=",", header=TRUE, col.names = col_names)
 
-data
+wine_data
 ```
+
+### Part B: The data contains three different classes of wine (1, 2, 3) as seen in the above data frame. 
+
+### Part C: Next, I will use the data to answer the following questions:
+
+1.  What class does the highest alcohol content belong to?
+
+    We will do this using the 'which.max()' function in the Alcohol column from 'wine_data'.
+
+    ```{r}
+    max_alcohol = wine_data[which.max(wine_data$Alcohol),]
+    max_alcohol
+    ```
+
+Here, we find that the highest alcohol content belongs to class 1, being 14.83 ABV (alcohol by volume).
+
+2.   The wine with the lowest alcohol content belongs to which class?
+
+    For this, we will use a similar function, except with the 'which.min()' function in the Alcohol column from 'wine_data'.
+
+    ```{r}
+    min_alcohol = wine_data[which.min(wine_data$Alcohol),]
+    min_alcohol
+    ```
+
+Here, we find that the lowest alcohol content belongs to class 2, being 11.03 ABV.
+
+3.   German beers have, on average 114 mg/l of magnesium. How many of these wines have higher levels of magnesium than that? We will assume that the magnesium reported in the data is in the same units.
