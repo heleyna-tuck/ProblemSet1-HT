@@ -7,7 +7,7 @@ editor: visual
 
 # Problem 1
 
-### Part A: Import the data into a 'data.frame'  in R. I have given the appropriate column name to the data frame as well: 
+### Part A: Import the data into a 'data.frame' in R. I have given the appropriate column name to the data frame as well:
 
 ```{r}
 col_names <- c('class','Alcohol', 'Malic acid', 'Ash', 'Alcalinity of ash', 'Magnesium', 'Total phenols', 'Flavanoids', 'Nonflavanoid phenols', 'Proanthocyanins', 'Color intensity', 'Hue', 'OD280/OD315 of diluted wines', 'Proline')
@@ -16,7 +16,7 @@ wine_data <- read.table(file="/Users/19892/OneDrive/Documents/STATS506/Data/wine
 wine_data
 ```
 
-### Part B: The data contains three different classes of wine (1, 2, 3) as seen in the above data frame. 
+### Part B: The data contains three different classes of wine (1, 2, 3) as seen in the above data frame.
 
 ### Part C: Next, I will use the data to answer the following questions:
 
@@ -31,24 +31,28 @@ wine_data
 
 Here, we find that the highest alcohol content belongs to class 1, being 14.83 ABV (alcohol by volume).
 
-2.   The wine with the lowest alcohol content belongs to which class?
+2.  The wine with the lowest alcohol content belongs to which class?
 
-    For this, we will use a similar function, except with the 'which.min()' function in the Alcohol column from 'wine_data'.
+````         
+For this, we will use a similar function, except with the 'which.min()' function in the Alcohol column from 'wine_data'.
 
-    ```{r}
-    min_alcohol <- wine_data[which.min(wine_data$Alcohol),]
-    min_alcohol
-    ```
+```{r}
+min_alcohol <- wine_data[which.min(wine_data$Alcohol),]
+min_alcohol
+```
+````
 
 Here, we find that the lowest alcohol content belongs to class 2, being 11.03 ABV.
 
-3.   German beers have, on average 114 mg/l of magnesium. How many of these wines have higher levels of magnesium than that? We will assume that the magnesium reported in the data is in the same units.
+3.  German beers have, on average 114 mg/l of magnesium. How many of these wines have higher levels of magnesium than that? We will assume that the magnesium reported in the data is in the same units.
 
-    Below we will use the length() function, along with the which() function and the given inequality to find how many wines have higher than 114 mg/l of magnesium.
+````         
+Below we will use the length() function, along with the which() function and the given inequality to find how many wines have higher than 114 mg/l of magnesium.
 
-    ```{r}
-    length(which(wine_data$Magnesium > 114))
-    ```
+```{r}
+length(which(wine_data$Magnesium > 114))
+```
+````
 
 Found above, there are 25 wines that satisfy the inequality.
 
@@ -66,7 +70,7 @@ Found above, there are 25 wines that satisfy the inequality.
 
 Above we can see that the code tells us that 14 wines in class 1, 6 wines in class 2, and 5 wines in class 3 have higher levels of magnesium than average German beer.
 
-### Part D: I will now create a table identifying the average value of each variable. One row will be provided with the overall average and one row per class with the class averages. 
+### Part D: I will now create a table identifying the average value of each variable. One row will be provided with the overall average and one row per class with the class averages.
 
 I will use the colMeans() function to calculate the overall means and individual class (1, 2, 3) means and put the results into a data frame named averages.
 
@@ -96,23 +100,37 @@ t.test(wine_data$Ash[wine_data$class = 1], wine_data$Ash[wine_data$class = 2], w
 
 # Problem 2
 
-### Part A: Below, I will write a function "isPerfectPower" to identify whether a given integer is a perfect power for a given power. 
+### Part A: Below, I will write a function "isPerfectPower" to identify whether a given integer is a perfect power for a given power.
 
 In the 'isPerfectPower()' function, I take in n and power. I use modular arithmetic: n\^(1/power)mod1
 
-If the remainder is 0, this tells us that the power-root of n is an integer. In other words, n would then be a "perfect power" and there exists an integer *r* (root) and *p* (the power) such that *r\^p = n*. I also output the the root itself.
+If the remainder is 0, this tells us that the power-root of n is an integer. In other words, n would then be a "perfect power" and there exists an integer *r* (root) and *p* (the power) such that *r\^p = n*. I also output the root itself.
 
--   Not sure how to get these to equal each other below.
+I also included if n\^(1/power)mod1 is 1 then the root is also perfect to account for rounding errors.
+
+-   Not sure how to get these to equal each other below. I think I got this? ask...
 
 ```{r}
 isPerfectPower <- function(n, power) {
-  output <- list(isPerfect = all.equal((n^(1/power) %% 1), 0), root = n^(1/power))
+  if(all.equal((n^(1/power) %% 1), 0) == TRUE){
+    Perfect = TRUE
+  }
+  else if(all.equal((n^(1/power) %% 1), 1) == TRUE){
+    Perfect = TRUE
+  }
+  else{
+    Perfect = FALSE
+  }
+  output <- list(isPerfect = Perfect, 
+                 root = n^(1/power))
   return(output)
 }
 ```
 
-```{r}
+Check if the function is working below:
 
+```{r}
+isPerfectPower(125, power = 2)
 isPerfectPower(125, power = 3)
 
 ```
@@ -121,23 +139,42 @@ Above we can see an example of the function being used. This says that given the
 
 ### Part B: I will demonstrate how the function in Part A works be writing another function "findRootPower()" that calls my first function, using a loop to identify both the root and power. My function will identify the *lowest* power for which the input is perfect.
 
+Below, I have the findRootPower() function check roots 2-200 on any given number, utilizing the isPerfectPower() function that was coded in part (a) if the isPerfectPower function returns TRUE, then the function returns the perfect power equation for the given number. If the loop goes through all 2-200 power options, then the function returns "Input is not a perfect power."
+
 ```{r}
 findRootPower <- function(num) {
   for (i in 2:200){
-    cat(i, "\n")
     list <- isPerfectPower(num, i)
     if (list$isPerfect == TRUE) {
-      return(cat(num, " = ",list$root, "^", i))
-      break
+      return(cat(num, " = ",list$root, "^", i, sep = ''))
     }
       
   }
-  return("Input is not a perfect power.")
+  return("Input is not a perfect power (for powers 2-200).")
     
-  
 }
 ```
 
 ```{r}
-findRootPower(125)
+findRootPower(94143178827)
 ```
+
+Here are some test values and what findRootPower() outputs (the last test number is shown above):
+
+-   27 = 3\^3
+
+-   13060694016 = 6\^13
+
+-   7776 = 6\^5
+
+-   170859375 = 15\^7
+
+-   58247422 : "Input is not a perfect power (for powers 2-200)."
+
+-   94143178827 = 3\^23
+
+# Problem 3
+
+This problem will lean into ChatGPT and other LLm (Large Language Models):
+
+### Part A: 
