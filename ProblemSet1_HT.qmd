@@ -44,10 +44,10 @@ Here, we find that the lowest alcohol content belongs to class 2, being 11.03 AB
 
 3.   German beers have, on average 114 mg/l of magnesium. How many of these wines have higher levels of magnesium than that? We will assume that the magnesium reported in the data is in the same units.
 
-    Below we will use the nrow() function and the given inequality to find how many wines have higher than 114 mg/l of magnesium.
+    Below we will use the length() function, along with the which() function and the given inequality to find how many wines have higher than 114 mg/l of magnesium.
 
     ```{r}
-    nrow(wine_data[wine_data$Magnesium > 114,])
+    length(which(wine_data$Magnesium > 114))
     ```
 
 Found above, there are 25 wines that satisfy the inequality.
@@ -57,11 +57,11 @@ Found above, there are 25 wines that satisfy the inequality.
     I will use a similar technique as before, but adding the condition of what class each condition has.
 
     ```{r}
-    nrow(wine_data[wine_data$class == 1 & wine_data$Magnesium > 114,])
+    length(which(wine_data$class == 1 & wine_data$Magnesium > 114))
 
-    nrow(wine_data[wine_data$class == 2 & wine_data$Magnesium > 114,])
+    length(which(wine_data$class == 2 & wine_data$Magnesium > 114))
 
-    nrow(wine_data[wine_data$class == 3 & wine_data$Magnesium > 114,])
+    length(which(wine_data$class == 3 & wine_data$Magnesium > 114))
     ```
 
 Above we can see that the code tells us that 14 wines in class 1, 6 wines in class 2, and 5 wines in class 3 have higher levels of magnesium than average German beer.
@@ -91,3 +91,28 @@ Above, we can see the overall means and individual class means. One observation 
 ```{r}
 t.test(wine_data$Ash[wine_data$class = 1], wine_data$Ash[wine_data$class = 2], wine_data$Ash[wine_data$class = 3])
 ```
+
+*I'm not sure how to do this lol*
+
+# Problem 2
+
+### Part A: Below, I will write a function "isPerfectPower" to identify whether a given integer is a perfect power for a given power. 
+
+In the 'isPerfectPower()' function, I take in n and power. I use modular arithmetic: n\^(1/power)mod1
+
+If the remainder is 0, this tells us that the power-root of n is an integer. In other words, n would then be a "perfect power" and there exists an integer *r* (root) and *p* (the power) such that *r\^p = n*. I also output the the root itself.
+
+```{r}
+isPerfectPower <- function(n, power) {
+  output <- list(n^(1/power) %% 1 == 0, root = n^(1/power))
+  return(output)
+}
+```
+
+```{r}
+isPerfectPower(27, power = 3)
+```
+
+Above we can see an example of the function being used. This says that given the numbers, 27 is a perfect power, where 3\^3 = 27.
+
+### Part B: I will demonstrate how the function in Part A works be writing another function "findRootPower()" that calls my first function, using a loop to identify both the root and power. My function will identify the *lowest* power for which the input is perfect.
