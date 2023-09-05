@@ -68,6 +68,26 @@ Above we can see that the code tells us that 14 wines in class 1, 6 wines in cla
 
 ### Part D: I will now create a table identifying the average value of each variable. One row will be provided with the overall average and one row per class with the class averages. 
 
-```{r}
+I will use the colMeans() function to calculate the overall means and individual class (1, 2, 3) means and put the results into a data frame named averages.
 
+```{r}
+overall_means <- colMeans(wine_data[,2:14])
+class1_means <- colMeans(wine_data[wine_data$class == 1,])
+class2_means <- colMeans(wine_data[wine_data$class == 2,])
+class3_means <- colMeans(wine_data[wine_data$class == 3,])
+
+averages <- data.frame('Overall mean' = overall_means, 
+                        'Class1 mean' = class1_means[2:14], 
+                        'Class2 mean' = class2_means[2:14], 
+                        'Class3 mean' = class3_means[2:14])
+
+averages
+```
+
+Above, we can see the overall means and individual class means. One observation that can be made is that class 1 and class 3 wines have a higher alcohol content than the overall average wine.
+
+### Part E: Below, I will carry out some t-tests to examine whether the level of Ash differs across the three classes.
+
+```{r}
+t.test(wine_data$Ash[wine_data$class = 1], wine_data$Ash[wine_data$class = 2], wine_data$Ash[wine_data$class = 3])
 ```
