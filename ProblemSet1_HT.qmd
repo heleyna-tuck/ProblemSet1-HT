@@ -102,15 +102,19 @@ In the 'isPerfectPower()' function, I take in n and power. I use modular arithme
 
 If the remainder is 0, this tells us that the power-root of n is an integer. In other words, n would then be a "perfect power" and there exists an integer *r* (root) and *p* (the power) such that *r\^p = n*. I also output the the root itself.
 
+-   Not sure how to get these to equal each other below.
+
 ```{r}
 isPerfectPower <- function(n, power) {
-  output <- list(isPerfect = n^(1/power) %% 1 == 0, root = n^(1/power))
+  output <- list(isPerfect = all.equal((n^(1/power) %% 1), 0), root = n^(1/power))
   return(output)
 }
 ```
 
 ```{r}
-isPerfectPower(27, power = 3)
+
+isPerfectPower(125, power = 3)
+
 ```
 
 Above we can see an example of the function being used. This says that given the numbers, 27 is a perfect power, where 3\^3 = 27.
@@ -119,16 +123,16 @@ Above we can see an example of the function being used. This says that given the
 
 ```{r}
 findRootPower <- function(num) {
-  for (i in 1:200){
+  for (i in 2:200){
+    cat(i, "\n")
     list <- isPerfectPower(num, i)
     if (list$isPerfect == TRUE) {
-      return(as.character(num) + ' = ' + as.character(list$root) + "^" + as.character(i))
+      return(cat(num, " = ",list$root, "^", i))
       break
     }
-  return("Input is not a perfect power.")
       
   }
-    
+  return("Input is not a perfect power.")
     
   
 }
