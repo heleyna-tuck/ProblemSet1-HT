@@ -104,7 +104,7 @@ If the remainder is 0, this tells us that the power-root of n is an integer. In 
 
 ```{r}
 isPerfectPower <- function(n, power) {
-  output <- list(n^(1/power) %% 1 == 0, root = n^(1/power))
+  output <- list(isPerfect = n^(1/power) %% 1 == 0, root = n^(1/power))
   return(output)
 }
 ```
@@ -116,3 +116,24 @@ isPerfectPower(27, power = 3)
 Above we can see an example of the function being used. This says that given the numbers, 27 is a perfect power, where 3\^3 = 27.
 
 ### Part B: I will demonstrate how the function in Part A works be writing another function "findRootPower()" that calls my first function, using a loop to identify both the root and power. My function will identify the *lowest* power for which the input is perfect.
+
+```{r}
+findRootPower <- function(num) {
+  for (i in 1:200){
+    list <- isPerfectPower(num, i)
+    if (list$isPerfect == TRUE) {
+      return(as.character(num) + ' = ' + as.character(list$root) + "^" + as.character(i))
+      break
+    }
+  return("Input is not a perfect power.")
+      
+  }
+    
+    
+  
+}
+```
+
+```{r}
+findRootPower(125)
+```
