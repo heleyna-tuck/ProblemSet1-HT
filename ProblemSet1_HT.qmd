@@ -11,7 +11,7 @@ editor: visual
 
 ```{r}
 col_names <- c('class','Alcohol', 'Malic acid', 'Ash', 'Alcalinity of ash', 'Magnesium', 'Total phenols', 'Flavanoids', 'Nonflavanoid phenols', 'Proanthocyanins', 'Color intensity', 'Hue', 'OD280/OD315 of diluted wines', 'Proline')
-wine_data <- read.table(file="/Users/19892/OneDrive/Documents/STATS506/Data/wine.data", sep=",", header=TRUE, col.names = col_names)
+wine_data <- read.table(file="/Users/19892/OneDrive/Documents/STATS506/ProblemSets/ProblemSet1-HT/wine.data", sep=",", header=TRUE, col.names = col_names)
 
 wine_data
 ```
@@ -175,6 +175,101 @@ Here are some test values and what findRootPower() outputs (the last test number
 
 # Problem 3
 
-This problem will lean into ChatGPT and other LLm (Large Language Models):
+This problem will lean into ChatGPT and other LLMs (Large Language Models):
 
 ### Part A: 
+
+I will input the given prompt in ChatGPT:
+
+Produce two R functions: The first should take in a vector of suits and a vector of ranks representing a 5-card hand, and return the name of the hand (in 5 card stud poker). The second should simulate dealing a round of cards in a game of poker (5 card stud). The user should be able to specify the number of players. Show the user all the hands, and use the first function to display the name of each of the hands.
+
+And copy it's output:
+
+```{r}
+# Function to determine the name of a poker hand
+determine_poker_hand <- function(suits, ranks) {
+  if (length(unique(suits)) == 1) {
+    # Check for a flush
+    if (length(unique(ranks)) == 5 && max(ranks) - min(ranks) == 4) {
+      if (max(ranks) == 14) {
+        return("Royal Flush")
+      } else {
+        return("Straight Flush")
+      }
+    } else {
+      return("Flush")
+    }
+  } else if (length(unique(ranks)) == 2) {
+    # Check for four of a kind or full house
+    counts <- table(ranks)
+    if (max(counts) == 4) {
+      return("Four of a Kind")
+    } else {
+      return("Full House")
+    }
+  } else if (length(unique(ranks)) == 3) {
+    # Check for three of a kind or two pairs
+    counts <- table(ranks)
+    if (max(counts) == 3) {
+      return("Three of a Kind")
+    } else {
+      return("Two Pairs")
+    }
+  } else if (length(unique(ranks)) == 4) {
+    # Check for one pair
+    return("One Pair")
+  } else {
+    # Check for straight or high card
+    if (length(unique(ranks)) == 5 && max(ranks) - min(ranks) == 4) {
+      return("Straight")
+    } else {
+      return("High Card")
+    }
+  }
+}
+
+# Function to simulate a round of 5-card stud poker
+simulate_poker_round <- function(num_players) {
+  # Create a deck of cards
+  suits <- rep(c("Hearts", "Diamonds", "Clubs", "Spades"), each = 13)
+  ranks <- rep(2:10, 4)
+  #Added rank_suits to account for 4 sets of Jack, Queen, King, and Ace also being in the deck
+  ranks_suit <- rep(c("Jack", "Queen", "King", "Ace"), 4)
+  ranks <- c(ranks, ranks_suit)
+  print(ranks)
+  print(length(ranks))
+  
+  # Shuffle the deck
+  deck <- sample(1:52)
+  print(deck[1:5])
+  # Deal cards to each player
+  player_hands <- vector("list", length = num_players)
+  for (i in 1:num_players) {
+    player_hands[[i]] <- deck[(((i - 1) * 5) + 1):(i * 5)]
+  }
+  
+  # Determine and display the name of each player's hand
+  for (i in 1:num_players) {
+    hand <- player_hands[[i]]
+    hand_suits <- suits[hand]
+    hand_ranks <- ranks[hand %% 13]
+    cat("Player", i, "Hand:", hand_suits, hand_ranks, "\n")
+    cat("Hand Name:", determine_poker_hand(hand_suits, hand_ranks), "\n\n")
+  }
+}
+
+```
+
+Here are some input examples:
+
+```{r}
+# Usage example:
+simulate_poker_round(4)  # Simulate a round of poker with 4 players
+
+
+```
+Note: I can't figure out how to get the ranks/suits to allign right, the Jack,Queen, King, and Ace are not-numeric so idk how to make it work. Ask: does it have to work or just run??
+
+
+
+
