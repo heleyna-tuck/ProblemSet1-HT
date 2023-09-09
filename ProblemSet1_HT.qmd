@@ -183,47 +183,54 @@ I will input the given prompt in ChatGPT:
 
 Produce two R functions: The first should take in a vector of suits and a vector of ranks representing a 5-card hand, and return the name of the hand (in 5 card stud poker). The second should simulate dealing a round of cards in a game of poker (5 card stud). The user should be able to specify the number of players. Show the user all the hands, and use the first function to display the name of each of the hands.
 
-And copy it's output:
+And copy it's output (I had to include an alter, making the rank_values all numeric for the code to work) I have annotated the code as well line by line as directed in (Part C):
 
 ```{r}
 # Function to determine the name of a poker hand
 determine_poker_hand <- function(suits, ranks) {
-  if (length(unique(suits)) == 1) {
+  # Map face cards to their corresponding numerical values for straight checking
+  rank_values <- c("2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace")
+  rank_values_numeric <- 2:14
+  
+  # Map the ranks of the hand to numerical values
+  hand_ranks_numeric <- match(ranks, rank_values)
+  
+  if (length(unique(suits)) == 1) { #If you have 5 cards of the same suit:
     # Check for a flush
-    if (length(unique(ranks)) == 5 && max(ranks) - min(ranks) == 4) {
-      if (max(ranks) == 14) {
+    if (length(unique(hand_ranks_numeric)) == 5 && max(hand_ranks_numeric) - min(hand_ranks_numeric) == 4) { #If you have 5 unique ranks and they are in order:
+      if (max(hand_ranks_numeric) == 14) { #if the max rank is an Ace, royal flush:
         return("Royal Flush")
-      } else {
+      } else {#If your highest rank is not an Ace:
         return("Straight Flush")
       }
-    } else {
+    } else {#If you have 5 cards of the same suit but they are not in order:
       return("Flush")
     }
-  } else if (length(unique(ranks)) == 2) {
+  } else if (length(unique(hand_ranks_numeric)) == 2) {#If you have 4 cards of the same rank:
     # Check for four of a kind or full house
-    counts <- table(ranks)
-    if (max(counts) == 4) {
+    counts <- table(hand_ranks_numeric)
+    if (max(counts) == 4) { #The hand contains four cards of the same rank:
       return("Four of a Kind")
-    } else {
+    } else {#If the hand contains 3 cards of the same rank and 2 cards of another rank:
       return("Full House")
     }
-  } else if (length(unique(ranks)) == 3) {
+  } else if (length(unique(hand_ranks_numeric)) == 3) { #If you have 3 cards of the same rank:
     # Check for three of a kind or two pairs
-    counts <- table(ranks)
-    if (max(counts) == 3) {
+    counts <- table(hand_ranks_numeric)
+    if (max(counts) == 3) { #If you have 3 cards of the same rank and 2 cards of 2 different ranks:
       return("Three of a Kind")
-    } else {
+    } else {#You have 2 cards of one rank, 2 cards of another rank, and 1 card of a different rank:
       return("Two Pairs")
     }
-  } else if (length(unique(ranks)) == 4) {
+  } else if (length(unique(hand_ranks_numeric)) == 4) {#You have 2 cards of the same rank.
     # Check for one pair
     return("One Pair")
   } else {
     # Check for straight or high card
-    if (length(unique(ranks)) == 5 && max(ranks) - min(ranks) == 4) {
+    if (length(unique(hand_ranks_numeric)) == 5 && max(hand_ranks_numeric) - min(hand_ranks_numeric) == 4) { #The hand contains 5 cards in order of rank, not all the same suit.
       return("Straight")
     } else {
-      return("High Card")
+      return("High Card") #The hand doesn't fulfill any of the above categories
     }
   }
 }
@@ -231,44 +238,161 @@ determine_poker_hand <- function(suits, ranks) {
 # Function to simulate a round of 5-card stud poker
 simulate_poker_round <- function(num_players) {
   # Create a deck of cards
-  suits <- rep(c("Hearts", "Diamonds", "Clubs", "Spades"), each = 13)
-  ranks <- rep(2:10, 4)
-  #Added rank_suits to account for 4 sets of Jack, Queen, King, and Ace also being in the deck
-  ranks_suit <- rep(c("Jack", "Queen", "King", "Ace"), 4)
-  ranks <- c(ranks, ranks_suit)
-  print(ranks)
-  print(length(ranks))
+  suits <- rep(c("Hearts", "Diamonds", "Clubs", "Spades"), each = 13) #13 cards for each suit
+  ranks <- rep(2:10, 4) # 4 sets of 2-10 rank cards
+  ranks <- c(ranks, "Jack", "Queen", "King", "Ace") #Add Jack, Queen, King, and Ace rank to the ranks vector (this should be 4 of each, change in next part)
   
   # Shuffle the deck
   deck <- sample(1:52)
-  print(deck[1:5])
+  
   # Deal cards to each player
   player_hands <- vector("list", length = num_players)
   for (i in 1:num_players) {
-    player_hands[[i]] <- deck[(((i - 1) * 5) + 1):(i * 5)]
+    player_hands[[i]] <- deck[(i - 1) * 5 + 1:i * 5] #For example, if I have 4 players, give player_hands[1] entries 1-5 in the shuffled deck.
   }
   
   # Determine and display the name of each player's hand
   for (i in 1:num_players) {
-    hand <- player_hands[[i]]
-    hand_suits <- suits[hand]
-    hand_ranks <- ranks[hand %% 13]
+    hand <- player_hands[[i]] #The current player's 5 card indexes
+    hand_suits <- suits[hand] #Assign the player 5 suits according to indexes in hand.
+    hand_ranks <- ranks[hand %% 13] #Assign the player 5 ranks for each card according to hand index mod 13.
     cat("Player", i, "Hand:", hand_suits, hand_ranks, "\n")
     cat("Hand Name:", determine_poker_hand(hand_suits, hand_ranks), "\n\n")
+    #display the hand.
   }
 }
 
-```
-
-Here are some input examples:
-
-```{r}
 # Usage example:
 simulate_poker_round(4)  # Simulate a round of poker with 4 players
 
+```
+### Part D: Determine whether the code produces accurate results. Explain how you made this determination. Check at least the following:
+
+- Are the inputs and outputs as described above?
+- Are the hands valid (eg. real cards, no duplicates, right numbers?)
+- Are the names of the hands correct? 
+- Does it ensure no duplicates in cards across hands? What happens if you ask for more than 10 hands to be dealt (as there are only 52 cards in a standard deck)?
+
+As we can see above, the initial output that ChatGPT gives isn't quite what we are looking for. To start, the hands do not have the expected 5 cards in each. Therefore, I tried to ask ChatGPT a series of questions to get the code looking like this:
+ 
+Here's what I asked ChatGPT:
+1. The function that deals each player 5 cards doesn't seem to be working, could you try to modify that?
+
+2.It looks like the ranks list only has 4 face cards in it, can you make it have 4 of each face cards?
+
+3. In the determine_poker_hand function it doesn't seem to recognize the face cards in ranks as maxs or mins, could you fix that?
+
+4. I also asked ChatGPT to make sure there were no duplicates in the deck. Oddly, this was much harder to get to work than I expected so I did it somewhat manually. Comments on my edits below.
+
+5. I added an if statement at the beginning of simulate_poker_round2() to return a statement if the given players are above 10, which is not possible to play poker with a standard deck.
+
+```{r}
+# Function to determine the name of a poker hand
+determine_poker_hand2 <- function(suits, ranks) {
+  # Map face cards to their corresponding numerical values for straight checking
+  rank_values <- c("2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace")
+  rank_values_numeric <- 2:14
+  
+  # Map the ranks of the hand to numerical values
+  hand_ranks_numeric <- match(ranks, rank_values)
+  
+  if (length(unique(suits)) == 1) {
+    # Check for a flush
+    if (length(unique(hand_ranks_numeric)) == 5 && max(hand_ranks_numeric) - min(hand_ranks_numeric) == 4) {
+      if (max(hand_ranks_numeric) == 14) {
+        return("Royal Flush")
+      } else {
+        return("Straight Flush")
+      }
+    } else {
+      return("Flush")
+    }
+  } else if (length(unique(hand_ranks_numeric)) == 2) {
+    # Check for four of a kind or full house
+    counts <- table(hand_ranks_numeric)
+    if (max(counts) == 4) {
+      return("Four of a Kind")
+    } else {
+      return("Full House")
+    }
+  } else if (length(unique(hand_ranks_numeric)) == 3) {
+    # Check for three of a kind or two pairs
+    counts <- table(hand_ranks_numeric)
+    if (max(counts) == 3) {
+      return("Three of a Kind")
+    } else {
+      return("Two Pairs")
+    }
+  } else if (length(unique(hand_ranks_numeric)) == 4) {
+    # Check for one pair
+    return("One Pair")
+  } else {
+    # Check for straight or high card
+    if (length(unique(hand_ranks_numeric)) == 5 && max(hand_ranks_numeric) - min(hand_ranks_numeric) == 4) {
+      return("Straight")
+    } else {
+      return("High Card")
+    }
+  }
+}
+
+
+# Function to simulate a round of 5-card stud poker
+simulate_poker_round2 <- function(num_players) {
+# Create a deck of cards
+  if(num_players > 10) {
+    return("The amount of players given is not possible with a standard deck of 52 cards.")
+  }
+  suits <- rep(c("Hearts", "Diamonds", "Clubs", "Spades"), times = 13) #All the suits
+  rank_values <- c("2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace") #all the ranks
+ deck <- data.frame(Suit = suits, Rank = rank_values) #create a deck with all the Suits and Ranks
+  deck$Card <- paste(deck$Suit, deck$Rank)  #Add a row that gives each Suit every Rank in the deck (total 52 cards)
+# Shuffle the deck
+shuffled_deck <- deck[sample(nrow(deck)), ]
+  
+  # Deal cards to each player
+  player_hands <- vector("list", length = num_players)
+  for (i in 1:num_players) {
+    start_index <- (i - 1) * 5 + 1
+    end_index <- i * 5
+    player_hands[[i]] <- shuffled_deck[start_index:end_index,]
+    
+    
+  }
+  
+  
+  # Determine and display the name of each player's hand
+  for (i in 1:num_players) {
+    hand <- player_hands[[i]]
+    hand_suits <- hand$Suit
+    hand_ranks <- hand$Rank
+    cat("Player", i, "Hand:", hand$Card, "\n")
+    cat("Hand Name:", determine_poker_hand2(hand_suits, hand_ranks), "\n\n")
+  }
+}
+
 
 ```
-Note: I can't figure out how to get the ranks/suits to allign right, the Jack,Queen, King, and Ace are not-numeric so idk how to make it work. Ask: does it have to work or just run??
+
+Here are some examples:
+
+```{r}
+# Usage example:
+set.seed(2)
+simulate_poker_round2(10)  # Simulate a round of poker with 10 players
+print("-----------------------------------------------")
+simulate_poker_round2(5)  # Simulate a round of poker with 5 players
+print("-----------------------------------------------")
+simulate_poker_round2(7)  # Simulate a round of poker with 7 players
+print("-----------------------------------------------")
+simulate_poker_round2(11)  # Simulate a round of poker with 11 players
+print("-----------------------------------------------")
+simulate_poker_round2(8)  # Simulate a round of poker with 11 players
+
+```
+As we can see from the above examples, it now seems like both functions are working the way we expect.
+
+
 
 
 
