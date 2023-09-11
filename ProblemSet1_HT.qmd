@@ -79,6 +79,9 @@ overall_means <- colMeans(wine_data[,2:14])
 class1_means <- colMeans(wine_data[wine_data$class == 1,])
 class2_means <- colMeans(wine_data[wine_data$class == 2,])
 class3_means <- colMeans(wine_data[wine_data$class == 3,])
+class1_means[4]
+class2_means[4]
+class1_means[4]-class2_means[4]
 
 averages <- data.frame('Overall mean' = overall_means, 
                         'Class1 mean' = class1_means[2:14], 
@@ -92,9 +95,19 @@ Above, we can see the overall means and individual class means. One observation 
 
 ### Part E: Below, I will carry out some t-tests to examine whether the level of Ash differs across the three classes.
 
+Class 1 & Class 2:
 ```{r}
-t.test(wine_data$Ash[wine_data$class = 1], wine_data$Ash[wine_data$class = 2], wine_data$Ash[wine_data$class = 3])
+t.test(wine_data$Ash[wine_data$class == 1], wine_data$Ash[wine_data$class == 2], mu = (class1_means[4] - class2_means[4]))
 ```
+Class 1 & Class 3:
+```{r}
+t.test(wine_data$Ash[wine_data$class == 1], wine_data$Ash[wine_data$class == 3], mu = (class1_means[4] - class3_means[4]))
+```
+Class 2 & Class 3:
+```{r}
+t.test(wine_data$Ash[wine_data$class == 2], wine_data$Ash[wine_data$class == 3], mu = (class2_means[4] - class3_means[4]))
+```
+Because t = 0 in all three cases, the level of Ash does not differ across all three classes.
 
 *I'm not sure how to do this lol*
 
@@ -282,7 +295,7 @@ Here's what I asked ChatGPT:
 
 3. In the determine_poker_hand function it doesn't seem to recognize the face cards in ranks as maxs or mins, could you fix that?
 
-4. I also asked ChatGPT to make sure there were no duplicates in the deck. Oddly, this was much harder to get to work than I expected so I did it somewhat manually. Comments on my edits below.
+4. I also asked ChatGPT to make sure there were no duplicates in the deck. Oddly, this was much harder to get to work than I expected so I did it somewhat manually. I found this out when I was running the code and getting an odd amount of high cards with no other hands. Comments on my edits below.
 
 5. I added an if statement at the beginning of simulate_poker_round2() to return a statement if the given players are above 10, which is not possible to play poker with a standard deck.
 
