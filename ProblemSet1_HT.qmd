@@ -113,9 +113,8 @@ Class 2 & Class 3:
 t.test(wine_data$Ash[wine_data$class == 2], wine_data$Ash[wine_data$class == 3], mu = (class2_means[4] - class3_means[4]))
 ```
 
-Because t = 0 in all three cases, the level of Ash does not differ across all three classes.
+As we can see above, the t.test outputs t = 0 in all three cases. However, that should not be true, given the confidence intervals for two of the tests does not go over 0. Therefore, there is probably a bug here. I tried updating R but that also didn't work.
 
-*I'm not sure how to do this lol*
 
 # Problem 2
 
