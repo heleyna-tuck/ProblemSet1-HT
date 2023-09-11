@@ -205,6 +205,8 @@ Produce two R functions: The first should take in a vector of suits and a vector
 And copy it's output (I had to include an alter, making the rank_values all numeric for the code to work) I have annotated the code as well line by line as directed in (Part C):
 
 ```{r}
+#I will set the seed:
+set.seed(2)
 # Function to determine the name of a poker hand
 determine_poker_hand <- function(suits, ranks) {
   # Map face cards to their corresponding numerical values for straight checking
@@ -267,7 +269,7 @@ simulate_poker_round <- function(num_players) {
   # Deal cards to each player
   player_hands <- vector("list", length = num_players)
   for (i in 1:num_players) {
-    player_hands[[i]] <- deck[(i - 1) * 5 + 1:i * 5] #For example, if I have 4 players, give player_hands[1] entries 1-5 in the shuffled deck.
+    player_hands[[i]] <- deck[(i - 1) * 5 + 1:i * 5] #For example, if I have 4 players, give player_hands[1] entries 1-5 in the shuffled deck. However, this is not dealing the cards correctly, even though the math seems to be right. I have changed this in the edited functions in the next part.
   }
   
   # Determine and display the name of each player's hand
@@ -275,14 +277,15 @@ simulate_poker_round <- function(num_players) {
     hand <- player_hands[[i]] #The current player's 5 card indexes
     hand_suits <- suits[hand] #Assign the player 5 suits according to indexes in hand.
     hand_ranks <- ranks[hand %% 13] #Assign the player 5 ranks for each card according to hand index mod 13.
-    cat("Player", i, "Hand:", hand_suits, hand_ranks, "\n")
-    cat("Hand Name:", determine_poker_hand(hand_suits, hand_ranks), "\n\n")
-    #display the hand.
+    cat("Player", i, "Hand:", hand_suits, hand_ranks, "\n") #Display each players hand
+    cat("Hand Name:", determine_poker_hand(hand_suits, hand_ranks), "\n\n") #Display what kind of hand they each have.
   }
 }
 
 # Usage example:
 simulate_poker_round(4)  # Simulate a round of poker with 4 players
+print("-----------------------------------------------")
+simulate_poker_round(11)
 
 ```
 
@@ -295,15 +298,17 @@ simulate_poker_round(4)  # Simulate a round of poker with 4 players
 
 As we can see above, the initial output that ChatGPT gives isn't quite what we are looking for. To start, the hands do not have the expected 5 cards in each. Therefore, I tried to ask ChatGPT a series of questions to get the code looking like this:
 
-Here's what I asked ChatGPT: 1. The function that deals each player 5 cards doesn't seem to be working, could you try to modify that?
+Here's what I asked ChatGPT: 
+
+1. The function that deals each player 5 cards doesn't seem to be working, could you try to modify that?
 
 2.It looks like the ranks list only has 4 face cards in it, can you make it have 4 of each face cards?
 
 3.  In the determine_poker_hand function it doesn't seem to recognize the face cards in ranks as maxs or mins, could you fix that?
 
-4.  I also asked ChatGPT to make sure there were no duplicates in the deck. Oddly, this was much harder to get to work than I expected so I did it somewhat manually. I found this out when I was running the code and getting an odd amount of high cards with no other hands. Comments on my edits below.
+4.  I also asked ChatGPT to make sure there were no duplicates in the deck. As we can see in the above output, there two 9 of clubs being dealt. Oddly, this was much harder to get to work than I expected so I did it somewhat manually. I found this out when I was running the code and getting an odd amount of high cards with no other hands. Comments on my edits below.
 
-5.  I added an if statement at the beginning of simulate_poker_round2() to return a statement if the given players are above 10, which is not possible to play poker with a standard deck.
+5.  I added an if statement at the beginning of simulate_poker_round2() to return a statement if the given players are above 10, which is not possible to play poker with a standard deck. As we can see above, there are NAs being printed when there are no more cards which is not what we want.
 
 ```{r}
 # Function to determine the name of a poker hand
@@ -364,14 +369,16 @@ simulate_poker_round2 <- function(num_players) {
   }
   suits <- rep(c("Hearts", "Diamonds", "Clubs", "Spades"), times = 13) #All the suits
   rank_values <- c("2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace") #all the ranks
- deck <- data.frame(Suit = suits, Rank = rank_values) #create a deck with all the Suits and Ranks
-  deck$Card <- paste(deck$Suit, deck$Rank)  #Add a row that gives each Suit every Rank in the deck (total 52 cards)
+ deck <- data.frame(Suit = suits, Rank = rank_values) #create a deck with all the Suits and Ranks, made this a data frame instead of a list.
+  deck$Card <- paste(deck$Suit, deck$Rank)  #Add a column that gives each Suit every Rank in the deck (total 52 cards). The data frame deck will now have a Suit, Rank, and Card column.
 # Shuffle the deck
 shuffled_deck <- deck[sample(nrow(deck)), ]
+print(shuffled_deck)
   
   # Deal cards to each player
   player_hands <- vector("list", length = num_players)
   for (i in 1:num_players) {
+    #Create start and end index to ensure each player is getting the right amount of cards.
     start_index <- (i - 1) * 5 + 1
     end_index <- i * 5
     player_hands[[i]] <- shuffled_deck[start_index:end_index,]
@@ -397,7 +404,6 @@ Here are some examples:
 
 ```{r}
 # Usage example:
-set.seed(2)
 simulate_poker_round2(10)  # Simulate a round of poker with 10 players
 print("-----------------------------------------------")
 simulate_poker_round2(5)  # Simulate a round of poker with 5 players
