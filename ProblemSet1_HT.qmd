@@ -96,17 +96,23 @@ Above, we can see the overall means and individual class means. One observation 
 ### Part E: Below, I will carry out some t-tests to examine whether the level of Ash differs across the three classes.
 
 Class 1 & Class 2:
+
 ```{r}
 t.test(wine_data$Ash[wine_data$class == 1], wine_data$Ash[wine_data$class == 2], mu = (class1_means[4] - class2_means[4]))
 ```
+
 Class 1 & Class 3:
+
 ```{r}
 t.test(wine_data$Ash[wine_data$class == 1], wine_data$Ash[wine_data$class == 3], mu = (class1_means[4] - class3_means[4]))
 ```
+
 Class 2 & Class 3:
+
 ```{r}
 t.test(wine_data$Ash[wine_data$class == 2], wine_data$Ash[wine_data$class == 3], mu = (class2_means[4] - class3_means[4]))
 ```
+
 Because t = 0 in all three cases, the level of Ash does not differ across all three classes.
 
 *I'm not sure how to do this lol*
@@ -190,7 +196,7 @@ Here are some test values and what findRootPower() outputs (the last test number
 
 This problem will lean into ChatGPT and other LLMs (Large Language Models):
 
-### Part A: 
+### Part A/B/C:
 
 I will input the given prompt in ChatGPT:
 
@@ -279,25 +285,25 @@ simulate_poker_round <- function(num_players) {
 simulate_poker_round(4)  # Simulate a round of poker with 4 players
 
 ```
+
 ### Part D: Determine whether the code produces accurate results. Explain how you made this determination. Check at least the following:
 
-- Are the inputs and outputs as described above?
-- Are the hands valid (eg. real cards, no duplicates, right numbers?)
-- Are the names of the hands correct? 
-- Does it ensure no duplicates in cards across hands? What happens if you ask for more than 10 hands to be dealt (as there are only 52 cards in a standard deck)?
+-   Are the inputs and outputs as described above?
+-   Are the hands valid (eg. real cards, no duplicates, right numbers?)
+-   Are the names of the hands correct?
+-   Does it ensure no duplicates in cards across hands? What happens if you ask for more than 10 hands to be dealt (as there are only 52 cards in a standard deck)?
 
 As we can see above, the initial output that ChatGPT gives isn't quite what we are looking for. To start, the hands do not have the expected 5 cards in each. Therefore, I tried to ask ChatGPT a series of questions to get the code looking like this:
- 
-Here's what I asked ChatGPT:
-1. The function that deals each player 5 cards doesn't seem to be working, could you try to modify that?
+
+Here's what I asked ChatGPT: 1. The function that deals each player 5 cards doesn't seem to be working, could you try to modify that?
 
 2.It looks like the ranks list only has 4 face cards in it, can you make it have 4 of each face cards?
 
-3. In the determine_poker_hand function it doesn't seem to recognize the face cards in ranks as maxs or mins, could you fix that?
+3.  In the determine_poker_hand function it doesn't seem to recognize the face cards in ranks as maxs or mins, could you fix that?
 
-4. I also asked ChatGPT to make sure there were no duplicates in the deck. Oddly, this was much harder to get to work than I expected so I did it somewhat manually. I found this out when I was running the code and getting an odd amount of high cards with no other hands. Comments on my edits below.
+4.  I also asked ChatGPT to make sure there were no duplicates in the deck. Oddly, this was much harder to get to work than I expected so I did it somewhat manually. I found this out when I was running the code and getting an odd amount of high cards with no other hands. Comments on my edits below.
 
-5. I added an if statement at the beginning of simulate_poker_round2() to return a statement if the given players are above 10, which is not possible to play poker with a standard deck.
+5.  I added an if statement at the beginning of simulate_poker_round2() to return a statement if the given players are above 10, which is not possible to play poker with a standard deck.
 
 ```{r}
 # Function to determine the name of a poker hand
@@ -403,10 +409,5 @@ print("-----------------------------------------------")
 simulate_poker_round2(8)  # Simulate a round of poker with 11 players
 
 ```
+
 As we can see from the above examples, it now seems like both functions are working the way we expect.
-
-
-
-
-
-
