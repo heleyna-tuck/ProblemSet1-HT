@@ -5,6 +5,8 @@ format: html
 editor: visual
 ---
 
+Link to my github repository: https://github.com/heleyna-tuck/ProblemSet1-HT
+
 # Problem 1
 
 ### Part A: Import the data into a 'data.frame' in R. I have given the appropriate column name to the data frame as well:
@@ -13,10 +15,9 @@ editor: visual
 col_names <- c('class','Alcohol', 'Malic acid', 'Ash', 'Alcalinity of ash', 'Magnesium', 'Total phenols', 'Flavanoids', 'Nonflavanoid phenols', 'Proanthocyanins', 'Color intensity', 'Hue', 'OD280/OD315 of diluted wines', 'Proline')
 wine_data <- read.table(file="/Users/19892/OneDrive/Documents/STATS506/ProblemSets/ProblemSet1-HT/wine.data", sep=",", header=TRUE, col.names = col_names)
 
-wine_data
 ```
 
-### Part B: The data contains three different classes of wine (1, 2, 3) as seen in the above data frame.
+### Part B: The data contains three different classes of wine (1, 2, 3) as observed when viewing the above data frame.
 
 ### Part C: Next, I will use the data to answer the following questions:
 
@@ -33,26 +34,23 @@ Here, we find that the highest alcohol content belongs to class 1, being 14.83 A
 
 2.  The wine with the lowest alcohol content belongs to which class?
 
-````         
 For this, we will use a similar function, except with the 'which.min()' function in the Alcohol column from 'wine_data'.
 
 ```{r}
 min_alcohol <- wine_data[which.min(wine_data$Alcohol),]
+
 min_alcohol
 ```
-````
 
 Here, we find that the lowest alcohol content belongs to class 2, being 11.03 ABV.
 
 3.  German beers have, on average 114 mg/l of magnesium. How many of these wines have higher levels of magnesium than that? We will assume that the magnesium reported in the data is in the same units.
 
-````         
 Below we will use the length() function, along with the which() function and the given inequality to find how many wines have higher than 114 mg/l of magnesium.
 
 ```{r}
 length(which(wine_data$Magnesium > 114))
 ```
-````
 
 Found above, there are 25 wines that satisfy the inequality.
 
@@ -79,9 +77,6 @@ overall_means <- colMeans(wine_data[,2:14])
 class1_means <- colMeans(wine_data[wine_data$class == 1,])
 class2_means <- colMeans(wine_data[wine_data$class == 2,])
 class3_means <- colMeans(wine_data[wine_data$class == 3,])
-class1_means[4]
-class2_means[4]
-class1_means[4]-class2_means[4]
 
 averages <- data.frame('Overall mean' = overall_means, 
                         'Class1 mean' = class1_means[2:14], 
@@ -115,17 +110,15 @@ t.test(wine_data$Ash[wine_data$class == 2], wine_data$Ash[wine_data$class == 3],
 
 As we can see above, the t.test outputs t = 0 in all three cases. However, that should not be true, given the confidence intervals for two of the tests does not go over 0. Therefore, there is probably a bug here. I tried updating R but that also didn't work.
 
-
 # Problem 2
 
 ### Part A: Below, I will write a function "isPerfectPower" to identify whether a given integer is a perfect power for a given power.
 
 In the 'isPerfectPower()' function, I take in n and power. I use modular arithmetic: n\^(1/power)mod1
 
-If the remainder is 0, this tells us that the power-root of n is an integer. In other words, n would then be a "perfect power" and there exists an integer *r* (root) and *p* (the power) such that *r\^p = n* for p >= 2. I also output the root itself.
+If the remainder is 0, this tells us that the power-root of n is an integer. In other words, n would then be a "perfect power" and there exists an integer *r* (root) and *p* (the power) such that *r\^p = n* for p \>= 2. I also output the root itself.
 
 I also included if n\^(1/power)mod1 is 1 then the root is also perfect to account for rounding errors. For example, 125\^(1/3) will output 4.9999.. which 4.9999...mod1 will output a 0.9999 (1).
-
 
 ```{r}
 isPerfectPower <- function(n, power) {
@@ -186,7 +179,6 @@ findRootPower(94143178827)
 ```
 
 Above are some test values and what findRootPower() outputs. As we can see, the functions are working as we would expect them to.
-
 
 # Problem 3
 
@@ -294,9 +286,9 @@ simulate_poker_round(11)
 
 As we can see above, the initial output that ChatGPT gives isn't quite what we are looking for. To start, the hands do not have the expected 5 cards in each. Therefore, I tried to ask ChatGPT a series of questions to get the code looking like this:
 
-Here's what I asked ChatGPT: 
+Here's what I asked ChatGPT:
 
-1. The function that deals each player 5 cards doesn't seem to be working, could you try to modify that?
+1.  The function that deals each player 5 cards doesn't seem to be working, could you try to modify that?
 
 2.It looks like the ranks list only has 4 face cards in it, can you make it have 4 of each face cards?
 
@@ -369,7 +361,6 @@ simulate_poker_round2 <- function(num_players) {
   deck$Card <- paste(deck$Suit, deck$Rank)  #Add a column that gives each Suit every Rank in the deck (total 52 cards). The data frame deck will now have a Suit, Rank, and Card column.
 # Shuffle the deck
 shuffled_deck <- deck[sample(nrow(deck)), ]
-print(shuffled_deck)
   
   # Deal cards to each player
   player_hands <- vector("list", length = num_players)
